@@ -1,0 +1,37 @@
+name: API Integration Tests
+
+on:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Start API in background
+      # This runs your C# API and keeps it running in the background
+      run: dotnet run &
+      
+    - name: Wait for API to start
+      # Gives the API a few seconds to boot up before sending tests
+      run: sleep 5
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install Newman
+      run: npm install -g newman
+      
+    - name: Run Postman Collection
+      # Runs the tests against the API that just started
+      run: newman run GearboxAPI_Collection.json
