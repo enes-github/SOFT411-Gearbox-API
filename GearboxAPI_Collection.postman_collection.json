@@ -9,11 +9,39 @@
   "item": [
     {
       "name": "New Request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Check 1: Validate successful response and data type\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\npm.test(\"RPM falloff is calculated as a number\", function () {\r\n    var jsonData = pm.response.json();\r\n    pm.expect(jsonData.rpmFalloff[0]).to.be.a(\"number\");\r\n});\r\n\r\n// Check 2: Validate boundary error for zero division\r\npm.test(\"Fails on zero ratio input\", function () {\r\n    // Assuming the test sent a 0.0 ratio in the pre-request script\r\n    pm.response.to.have.status(400);\r\n    pm.expect(pm.response.text()).to.include(\"Ratio cannot be zero\");\r\n});\r\n\r\n// Check 3: Validate API contract response time\r\npm.test(\"Response time is less than 200ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(200);\r\n});\r\n\r\n// Check 4: Validate Content-Type is strictly JSON\r\npm.test(\"Content-Type is application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");\r\n});"
+            ]
+          }
+        }
+      ],
       "request": {
-        "method": "GET",
+        "method": "POST",
         "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"gear1\": 3.166, \"gear2\": 1.882, \"finalDrive\": 4.111}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
-          "raw": ""
+          "raw": "http://localhost:5000/calculate",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "calculate"
+          ]
         }
       },
       "response": []
