@@ -34,4 +34,4 @@ jobs:
       
     - name: Run Postman Collection
       # Runs the tests against the API that just started
-      run: newman run GearboxAPI_Collection.json
+      run: newman run GearboxAPI_Collection.postman_collection.json
